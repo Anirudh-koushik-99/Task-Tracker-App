@@ -1,48 +1,62 @@
-import { useState } from 'react'
+import { useState } from "react";
 import Header from "./components/Header";
 import Tasks from "./components/Tasks";
+import AddTask from "./components/AddTask";
 
 function App() {
-  const [tasks, setTasks] = useState(
-    [
-        {
-            id:1,
-            text:'Doctors Appointment',
-            day: 'May 5th',
-            reminder: true
-        },
-        {
-            id:2,
-            text:'Meeting',
-            day: 'May 6th',
-            reminder: true
-        },
-        {
-            id:3,
-            text:'Shopping',
-            day: 'May 7th',
-            reminder: false
-        }
-    ]
-)
+  const [showAddTask, setShowAddTask] = useState(false)
 
-//DELETE TASK
-const deleteTask = (id) => {
-    setTasks(tasks.filter((task) => task.id !== id))
-}
+  const [tasks, setTasks] = useState([
+    {
+      id: 1,
+      text: "Doctors Appointment",
+      day: "May 5th",
+      reminder: true,
+    },
+    {
+      id: 2,
+      text: "Meeting",
+      day: "May 6th",
+      reminder: true,
+    },
+    {
+      id: 3,
+      text: "Shopping",
+      day: "May 7th",
+      reminder: false,
+    },
+  ]);
 
-//TOGGLE REMINDER
-const toggleReminder = (id) =>{
-  setTasks(tasks.map((task) => task.id === id ? {...task, reminder: !task.reminder} : task))
-}
+  //ADD TASK
+  const addTask = (task) => {
+    const id = Math.floor(Math.random() * 10000) + 1
+    const newTask = {id, ...task }
+    setTasks([...tasks, newTask])
+  }
+ 
+  //DELETE TASK
+  const deleteTask = (id) => {
+    setTasks(tasks.filter((task) => task.id !== id));
+  };
 
+  //TOGGLE REMINDER
+  const toggleReminder = (id) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, reminder: !task.reminder } : task
+      )
+    );
+  };
 
   return (
     <div className="container">
-      <Header />
-      { tasks.length > 0 ? 
-        <Tasks  tasks = {tasks} onDelete={deleteTask} onToggle = {toggleReminder}/> : 'No Tasks to show'
-      }
+      <Header onAdd = {() => setShowAddTask(!showAddTask)}/>
+      {showAddTask && <AddTask onAdd = {addTask} />}
+      {tasks.length > 0 ? (
+        <Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder} />
+      ) : (
+        "No Tasks to show"
+      )}
     </div>
   );
 }
